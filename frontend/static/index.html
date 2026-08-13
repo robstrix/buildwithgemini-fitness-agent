@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitness & Workout Coach AI</title>
+<!-- Google Fonts & Material Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+
+<style>
+  :root {
+    --bg-main: #0f172a;
+    --bg-card: rgba(30, 41, 59, 0.7);
+    --bg-card-user: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --bg-card-hover: rgba(51, 65, 85, 0.8);
+    --border-glow: rgba(255, 255, 255, 0.12);
+    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    --accent-indigo: #6366f1;
+    --accent-emerald: #10b981;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-code: 'JetBrains Mono', monospace;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-main: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--bg-main);
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Header */
+  header {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-glow);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .brand-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+  }
+
+  .brand-info h1 {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .brand-info p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: var(--accent-emerald);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--accent-emerald);
+    box-shadow: 0 0 8px var(--accent-emerald);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  /* Main Container */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Chat Log */
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    scroll-behavior: smooth;
+  }
+
+  #log::-webkit-scrollbar {
+    width: 6px;
+  }
+  #log::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+
+  /* Welcome Screen / Empty State */
+  .welcome-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glow);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    margin: auto 0;
+    box-shadow: var(--shadow-main);
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .welcome-card h2 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .welcome-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  /* Suggestion Chips */
+  .chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+  }
+
+  .chip {
+    background: rgba(51, 65, 85, 0.5);
+    border: 1px solid var(--border-glow);
+    color: var(--text-primary);
+    padding: 0.55rem 0.95rem;
+    border-radius: 20px;
+    font-size: 0.825rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .chip:hover {
+    background: var(--accent-indigo);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  /* Messages */
+  .msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .msg.user {
+    align-self: flex-end;
+  }
+
+  .msg.agent {
+    align-self: flex-start;
+  }
+
+  .msg-author {
+    font-size: 0.725rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    padding: 0 0.25rem;
+    font-weight: 500;
+  }
+
+  .msg.user .msg-author {
+    text-align: right;
+  }
+
+  .bubble {
+    padding: 0.9rem 1.25rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    word-break: break-word;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .msg.user .bubble {
+    background: var(--bg-card-user);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.agent .bubble {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-glow);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+  }
+
+  .msg.agent .bubble.rich {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  /* Formatting inside bubble */
+  .bubble p { margin-bottom: 0.6rem; }
+  .bubble p:last-child { margin-bottom: 0; }
+  .bubble ul, .bubble ol { margin: 0.5rem 0 0.5rem 1.25rem; }
+  .bubble li { margin-bottom: 0.25rem; }
+  .bubble code {
+    font-family: var(--font-code);
+    background: rgba(15, 23, 42, 0.6);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #38bdf8;
+  }
+  .bubble pre {
+    background: #090d16;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.85rem;
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    margin: 0.6rem 0;
+  }
+  .bubble pre code {
+    background: transparent;
+    padding: 0;
+    color: #e2e8f0;
+  }
+  .bubble strong { font-weight: 600; color: #ffffff; }
+
+  /* Media & Image Card */
+  .chat-image-card {
+    margin-top: 0.75rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-glow);
+    background: rgba(15, 23, 42, 0.8);
+    position: relative;
+    max-width: 400px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease;
+  }
+
+  .chat-image-card:hover {
+    transform: scale(1.02);
+  }
+
+  .chat-image-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: pointer;
+  }
+
+  .chat-image-caption {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background: rgba(15, 23, 42, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Typing Indicator */
+  .typing-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    animation: typing 1.4s infinite ease-in-out;
+  }
+
+  .typing-dot:nth-child(1) { animation-delay: 0s; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+  }
+
+  /* A2UI Component Enhancements */
+  .a2card {
+    border: 1px solid var(--border-glow);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-main);
+    max-width: 100%;
+  }
+
+  .a2card + .a2card, .a2col > .a2card { margin-top: 0.75rem; }
+  .a2col { display: flex; flex-direction: column; gap: 0.5rem; }
+  .a2row { display: flex; flex-direction: row; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .a2row.between { justify-content: space-between; }
+  .a2text { margin: 0; line-height: 1.5; color: var(--text-primary); }
+  .a2text.a2-h1 { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: #fff; }
+  .a2text.a2-h2 { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: #fff; }
+  .a2text.a2-h3 { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 600; color: #fff; }
+  .a2text.a2-caption { font-size: 0.8rem; color: var(--text-secondary); }
+  .a2divider { border: none; border-top: 1px solid var(--border-glow); margin: 0.6rem 0; width: 100%; }
+  .a2img { max-width: 100%; border-radius: var(--radius-md); display: block; }
+  .material-symbols-outlined { font-size: 1.2rem; vertical-align: middle; color: var(--accent-indigo); }
+
+  /* Input Footer */
+  footer {
+    padding: 1rem 1.5rem 1.25rem;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-glow);
+  }
+
+  .quick-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  .quick-bar::-webkit-scrollbar { height: 0px; }
+
+  .quick-pill {
+    white-space: nowrap;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid var(--border-glow);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .quick-pill:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-indigo);
+    background: rgba(99, 102, 241, 0.15);
+  }
+
+  form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .input-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.85rem 1.2rem;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid var(--border-glow);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  input:focus {
+    border-color: var(--accent-indigo);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    background: rgba(30, 41, 59, 1);
+  }
+
+  input::placeholder {
+    color: var(--text-muted);
+  }
+
+  button {
+    padding: 0.85rem 1.4rem;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--accent-gradient);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    transition: all 0.2s ease;
+  }
+
+  button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  /* Modal Lightbox */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal.active { display: flex; animation: fadeIn 0.2s ease-out; }
+
+  .modal img {
+    max-width: 90vw;
+    max-height: 85vh;
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--border-glow);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">💪</div>
+    <div class="brand-info">
+      <h1>Fitness & Workout Coach AI</h1>
+      <p>Personalized Workouts • Macro Targets • AI Meal & Progress Tracking</p>
+    </div>
+  </div>
+  <div class="status-badge">
+    <div class="pulse-dot"></div>
+    <span>Online</span>
+  </div>
+</header>
+
+<main>
+  <div id="log">
+    <div class="welcome-card" id="welcome">
+      <h2>Welcome to Your Fitness Coach AI</h2>
+      <p>I can help you track weekly workouts in Firestore, calculate daily macronutrient goals, consult fitness & recovery guidelines, and generate meal visualizer images.</p>
+      
+      <div class="chips-container">
+        <button class="chip" onclick="sendQuick('Show my recent workout logs from Firestore.')">
+          <span>📊</span> Show Workout Logs
+        </button>
+        <button class="chip" onclick="sendQuick('Calculate protein and macro targets for an 80kg male building muscle.')">
+          <span>🥗</span> Calculate Macro Targets
+        </button>
+        <button class="chip" onclick="sendQuick('Generate a picture of a high-protein post-workout meal.')">
+          <span>🖼️</span> Generate Meal Image
+        </button>
+        <button class="chip" onclick="sendQuick('What are the recommended recovery and hydration guidelines?')">
+          <span>📖</span> Fitness & Recovery Guide
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="quick-bar">
+    <div class="quick-pill" onclick="sendQuick('Log a workout: 45 min Bench Press & Squats')">💪 Log Workout</div>
+    <div class="quick-pill" onclick="sendQuick('Show my recent workout logs')">📊 Recent Logs</div>
+    <div class="quick-pill" onclick="sendQuick('Calculate my macros for muscle gain')">🥗 Calculate Macros</div>
+    <div class="quick-pill" onclick="sendQuick('Generate an image of a healthy post-workout protein bowl')">🎨 Meal Visualizer</div>
+  </div>
+
+  <form id="form">
+    <div class="input-wrapper">
+      <input id="input" placeholder="Ask your coach anything about workouts, macros, or meal ideas..." autocomplete="off" autofocus>
+    </div>
+    <button type="submit">
+      <span>Send</span>
+      <span class="material-symbols-outlined" style="color: #fff; font-size: 1.1rem;">send</span>
+    </button>
+  </form>
+</footer>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <img id="modal-img" src="" alt="Enlarged preview">
+</div>
+
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const welcome = document.getElementById("welcome");
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modal-img");
+
+function el(tag, cls, text) { 
+  const e = document.createElement(tag); 
+  if (cls) e.className = cls; 
+  if (text != null) e.textContent = text; 
+  return e; 
+}
+
+function openModal(src) {
+  modalImg.src = src;
+  modal.classList.add("active");
+}
+
+function closeModal() {
+  modal.classList.remove("active");
+}
+
+function sendQuick(text) {
+  input.value = text;
+  form.dispatchEvent(new Event('submit'));
+}
+
+function bubble(who) {
+  if (welcome && welcome.parentNode) {
+    welcome.style.display = "none";
+  }
+  const m = el("div", "msg " + who);
+  const author = el("div", "msg-author", who === "user" ? "You" : "Coach AI");
+  const b = el("div", "bubble");
+  
+  m.appendChild(author);
+  m.appendChild(b);
+  log.appendChild(m); 
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+// Simple Markdown Formatter
+function formatMarkdown(text) {
+  if (!text) return "";
+  let html = text
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/^### (.*$)/gim, '<h3 class="a2text a2-h3">$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2 class="a2text a2-h2">$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1 class="a2text a2-h1">$1</h1>')
+    .replace(/^\* (.*$)/gim, '• $1')
+    .replace(/^- (.*$)/gim, '• $1')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+
+  return `<p>${html}</p>`;
+}
+
+// Extract Image URLs from text or markdown
+function extractAndRenderImages(text, container) {
+  const urlRegex = /(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp)(?:\?[^\s]*)?)/gi;
+  const matches = text.match(urlRegex) || [];
+  
+  matches.forEach(url => {
+    const card = el("div", "chat-image-card");
+    const img = el("img");
+    img.src = url;
+    img.alt = "Generated Image";
+    img.onclick = () => openModal(url);
+
+    const caption = el("div", "chat-image-caption");
+    caption.innerHTML = `<span>📷 Generated Asset</span><span class="material-symbols-outlined" style="font-size: 1rem;">open_in_full</span>`;
+
+    card.appendChild(img);
+    card.appendChild(caption);
+    container.appendChild(card);
+  });
+}
+
+/* ----------------------------------------------------------------------------
+ * A2UI mini-renderer (v0.8 Basic Catalog subset).
+ * -------------------------------------------------------------------------- */
+function boundStr(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v.literalString === "string") return v.literalString;
+  return "";
+}
+
+function childIds(props) {
+  const ids = [];
+  if (props && typeof props.child === "string") ids.push(props.child);
+  const ch = props && props.children;
+  if (ch && Array.isArray(ch.explicitList)) for (const c of ch.explicitList) if (typeof c === "string") ids.push(c);
+  return ids;
+}
+
+function iconName(n) { return String(n || "").replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/\s+/g, "_").toLowerCase(); }
+
+function buildNode(id, comps, seen) {
+  if (!id || seen.has(id)) return null;
+  seen.add(id);
+  const spec = comps[id];
+  if (!spec || typeof spec !== "object") return null;
+  const type = Object.keys(spec)[0];
+  const props = spec[type] || {};
+  const kids = () => childIds(props).map(cid => buildNode(cid, comps, seen)).filter(Boolean);
+
+  switch (type) {
+    case "Card": {
+      const d = el("div", "a2card"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Column":
+    case "List": {
+      const horizontal = type === "List" && props.direction === "horizontal";
+      const d = el("div", horizontal ? "a2row" : "a2col"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Row": {
+      const d = el("div", "a2row" + (props.distribution === "spaceBetween" ? " between" : ""));
+      kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Text": {
+      const t = el("div", "a2text");
+      const hint = String(props.usageHint || "body").toLowerCase();
+      if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(hint)) t.classList.add("a2-" + hint);
+      else if (hint === "caption") t.classList.add("a2-caption");
+      t.textContent = boundStr(props.text);
+      return t;
+    }
+    case "Divider":
+      return el("hr", "a2divider");
+    case "Image": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;
+      const img = el("img", "a2img"); img.src = src; img.alt = boundStr(props.alt) || ""; 
+      img.onclick = () => openModal(src);
+      return img;
+    }
+    case "Icon": {
+      const s = el("span", "material-symbols-outlined"); s.textContent = iconName(boundStr(props.name) || props.name); return s;
+    }
+    default:
+      return null;
+  }
+}
+
+function renderSurface(messages, container) {
+  const comps = {};
+  const roots = [];
+  for (const m of messages) {
+    if (m.beginRendering && typeof m.beginRendering.root === "string") roots.push(m.beginRendering.root);
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.id && c.component) comps[c.id] = c.component;
+  }
+  let rootIds = roots.filter(r => comps[r]);
+  if (rootIds.length === 0) {
+    const referenced = new Set();
+    for (const id in comps) { const spec = comps[id]; childIds(spec[Object.keys(spec)[0]] || {}).forEach(c => referenced.add(c)); }
+    rootIds = Object.keys(comps).filter(id => !referenced.has(id));
+  }
+  let drew = false;
+  for (const rid of rootIds) { const node = buildNode(rid, comps, new Set()); if (node) { container.appendChild(node); drew = true; } }
+  return drew;
+}
+
+function flattenText(messages) {
+  const out = [];
+  for (const m of messages) {
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.component && c.component.Text) out.push(boundStr(c.component.Text.text));
+  }
+  return out.join("\n").trim();
+}
+
+function renderReply(b, parts) {
+  b.textContent = "";
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const a2ui = parts.filter(p => p && p.kind === "a2ui" && p.data).map(p => p.data);
+
+  const textStr = texts.join("\n").trim();
+  if (textStr) {
+    const textNode = el("div");
+    textNode.innerHTML = formatMarkdown(textStr);
+    b.appendChild(textNode);
+    extractAndRenderImages(textStr, b);
+  }
+
+  if (a2ui.length) {
+    b.classList.add("rich");
+    if (!renderSurface(a2ui, b)) {
+      const fallbackNode = el("div");
+      fallbackNode.innerHTML = formatMarkdown(flattenText(a2ui) || "(no card content)");
+      b.appendChild(fallbackNode);
+    }
+  }
+  if (!b.childNodes.length) b.textContent = "(no response)";
+  log.scrollTop = log.scrollHeight;
+}
+
+// Form submit
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  bubble("user").textContent = text;
+  input.value = "";
+  
+  const b = bubble("agent"); 
+  b.innerHTML = `
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  `;
+  
+  try {
+    const res = await fetch("/chat", { 
+      method: "POST", 
+      headers: { "Content-Type": "application/json" }, 
+      body: JSON.stringify({ message: text }) 
+    });
+    
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Server returned non-JSON (HTTP ${res.status}). ${raw.slice(0, 300)}`); }
+    renderReply(b, data.parts || []);
+  } catch (e) {
+    b.textContent = "Error: " + e.message;
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "eval_cases": [
+    {
+      "eval_case_id": "math_calculation",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "What is 15 squared plus 5 factorial?"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "345"}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "division_calculation",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Divide 100 by 4 and multiply by 3."}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "75"}]
+        }
+      }
+    }
+  ]
+}

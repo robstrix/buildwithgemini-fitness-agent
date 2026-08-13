@@ -1,0 +1,30 @@
+# Fitness, Nutrition, and Workout Recovery Guide
+
+## 1. Macronutrient Guidelines & Targets
+- **Protein Intake**: For muscle building and hypertrophy, target 1.6 to 2.2 grams of protein per kilogram of body weight (or 0.8 to 1.0 grams per pound). Excellent sources include chicken breast, salmon, eggs, tofu, Greek yogurt, and whey protein.
+- **Carbohydrates**: Carbohydrates fuel intense workouts and replenish glycogen stores. Target 3.0 to 5.0 grams per kilogram for active individuals. Focus on complex carbohydrates like oats, brown rice, sweet potatoes, and quinoa.
+- **Dietary Fats**: Essential for hormone regulation (including testosterone). Target 0.5 to 1.0 grams per kilogram (20-35% of total caloric intake). Prioritize healthy fats such as avocados, olive oil, almonds, and chia seeds.
+
+## 2. Energy Expenditure & BMR Formulas
+- **Mifflin-St Jeor Formula for BMR (Basal Metabolic Rate)**:
+  - Men: BMR = (10 x weight_kg) + (6.25 x height_cm) - (5 x age) + 5
+  - Women: BMR = (10 x weight_kg) + (6.25 x height_cm) - (5 x age) - 161
+- **Total Daily Energy Expenditure (TDEE)**:
+  - Sedentary (little to no exercise): BMR x 1.2
+  - Lightly Active (exercise 1-3 days/week): BMR x 1.375
+  - Moderately Active (exercise 3-5 days/week): BMR x 1.55
+  - Very Active (exercise 6-7 days/week): BMR x 1.725
+  - Caloric Deficit for Fat Loss: 300 to 500 kcal below TDEE
+  - Caloric Surplus for Muscle Gain: 250 to 500 kcal above TDEE
+
+## 3. Workout Principles & Hypertrophy
+- **Progressive Overload**: Systematically increase weight, volume (sets/reps), or decrease rest intervals over time to continually stimulate muscle growth.
+- **Rep Ranges**:
+  - Strength Focus: 3 to 5 reps at 80-90% 1RM
+  - Hypertrophy (Muscle Growth): 6 to 12 reps at 65-80% 1RM
+  - Muscular Endurance: 15 to 20+ reps at <65% 1RM
+- **Rest Periods**: 2-3 minutes for compound multi-joint movements (Squat, Deadlift, Bench Press); 60-90 seconds for isolation exercises.
+
+## 4. Hydration & Recovery Protocol
+- **Hydration**: Drink 35 to 45 ml of water per kilogram of body weight daily. Add electrolyte supplements (sodium, potassium, magnesium) during intense sessions over 60 minutes.
+- **Sleep & Repair**: Aim for 7 to 9 hours of quality sleep per night. Growth hormone release peaks during deep non-REM sleep phases.

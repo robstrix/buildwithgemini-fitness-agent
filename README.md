@@ -1,4 +1,4 @@
-# math-agent
+# fitness-agent
 
 Simple ReAct agent
 Agent generated with `agents-cli` version `1.2.1`
